@@ -1,7 +1,9 @@
 from transformers import T5Tokenizer, T5ForConditionalGeneration, Trainer, TrainingArguments
+from pathlib import Path
 from data_processing import load_and_preprocess_data
 from utils import preprocess_function
 from config import load_config
+
 
 def train_model(config_path='config/config.yaml'):
     config = load_config(config_path)
@@ -37,8 +39,12 @@ def train_model(config_path='config/config.yaml'):
     )
 
     trainer.train()
-    model.save_pretrained('text-to-sql-model')
-    tokenizer.save_pretrained('text-to-sql-model')
+
+    path = Path('results')
+    path.mkdir(parents=True, exist_ok=True)
+
+    model.save_pretrained('results/text-to-sql-model')
+    tokenizer.save_pretrained('results/text-to-sql-model')
 
 if __name__ == "__main__":
     train_model()

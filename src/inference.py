@@ -1,7 +1,7 @@
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 from config import load_config
 
-def generate_sql(question, schema, model_path='text-to-sql-model'):
+def generate_sql(question, schema, model_path='results/text-to-sql-model'):
     config = load_config()
 
     model = T5ForConditionalGeneration.from_pretrained(model_path)
