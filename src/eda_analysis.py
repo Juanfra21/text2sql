@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+import re
 
 # Load a small subset (20%) for training
 dataset = load_dataset('b-mc2/sql-create-context', split="train")
@@ -39,6 +40,18 @@ print("\nData types and missing values:")
 print(df.info())
 print("\nMissing values count per column:")
 print(df.isnull().sum())
+
+# Text Standardization: Lowercase all text and remove special characters
+def standardize_text(text):
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+    return text
+
+df['question'] = df['question'].apply(standardize_text)
+df['context'] = df['context'].apply(standardize_text)
+
+print("Cleaned and standardized data:")
+print(df.head())
 
 # Distribution of Categorical Variables
 categorical_columns = ['answer', 'question', 'context']
@@ -103,4 +116,16 @@ plt.show()
 # Derived Features
 df['question_word_count'] = df['question'].apply(lambda x: len(x.split()))
 print(df[['question', 'question_word_count']].head())
+
+from transformers import T5Tokenizer
+
+# Load the T5 tokenizer
+tokenizer = T5Tokenizer.from_pretrained('t5-small')
+
+# Tokenize the text data
+df['question_tokens'] = df['question'].apply(lambda x: tokenizer.encode(x, truncation=True, padding='max_length', max_length=128))
+df['context_tokens'] = df['context'].apply(lambda x: tokenizer.encode(x, truncation=True, padding='max_length', max_length=128))
+
+print("Tokenized data:")
+print(df[['question', 'question_tokens', 'context', 'context_tokens']].head())
 
