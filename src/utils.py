@@ -1,6 +1,10 @@
-def preprocess_function(examples, tokenizer, max_length=512):
-    inputs = [q + " [schema] " + s for q, s in zip(examples['question'], examples['context'])]
-    model_inputs = tokenizer(inputs, max_length=max_length, truncation=True, padding='max_length')
-    labels = tokenizer(examples['answer'], max_length=max_length, truncation=True, padding='max_length')
+# Preprocessing function
+def preprocess_function(examples):
+    inputs = ["translate English to SQL: " + p + " " + c for p, c in zip(examples['prompt'], examples['context'])]
+    model_inputs = tokenizer(inputs, max_length=512, truncation=True, padding="max_length")
+
+    with tokenizer.as_target_tokenizer():
+        labels = tokenizer(examples['answer'], max_length=512, truncation=True, padding="max_length")
+
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
