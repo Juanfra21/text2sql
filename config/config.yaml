@@ -1,9 +1,0 @@
-model_name: 't5-small'
-train_size: 0.8
-learning_rate: 2e-5
-batch_size: 8
-num_epochs: 3
-weight_decay: 0.01
-max_length: 512
-output_dir: './results'
-dataset_name: 'b-mc2/sql-create-context'
